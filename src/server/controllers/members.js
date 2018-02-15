@@ -117,10 +117,10 @@ export async function list(req, res, next) {
     'role': 'role',
     'tier': 'tier.name',
     'isActive': isActive,
-    'totalAmountDonated': (r) => (get(r, 'stats.totalDonations') || 0) / 100,
+    'totalAmountDonated': (r) => (get(r, 'stats.totalDonations') || 0),
     'currency': 'transactions[0].currency',
     'lastTransactionAt': r => moment(r.transactions[0] && r.transactions[0].createdAt).format("YYYY-MM-DD HH:mm"),
-    'lastTransactionAmount': (r) => (get(r, 'transactions[0].amount') || 0) / 100,
+    'lastTransactionAmount': (r) => (get(r, 'transactions[0].amount') || 0),
     'profile': (r) => `${process.env.WEBSITE_URL}/${r.member.slug}`,
     'name': 'member.name',
     'company': 'member.company',
@@ -156,6 +156,11 @@ export async function list(req, res, next) {
 
   switch (req.params.format) {
     case 'csv':
+      data = data.map(d => {
+        d.totalAmountDonated = d.totalAmountDonated / 100;
+        d.lastTransactionAmount = d.lastTransactionAmount / 100;
+        return d;
+      });
       const csv = json2csv(data);
       res.setHeader('content-type', 'text/csv');
       res.send(csv);
