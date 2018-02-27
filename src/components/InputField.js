@@ -78,7 +78,8 @@ class InputField extends React.Component {
     className: PropTypes.string,
     type: PropTypes.string,
     onChange: PropTypes.func.isRequired,
-    required: PropTypes.bool
+    required: PropTypes.bool,
+    style: PropTypes.object
   }
 
   constructor(props) {
@@ -129,6 +130,7 @@ class InputField extends React.Component {
     let value = this.state.value;
 
     switch (this.props.type) {
+
       case 'creditcard':
         this.input =  (<FormGroup controlId={field.name}>
                         {field.className === 'horizontal' &&
@@ -137,18 +139,19 @@ class InputField extends React.Component {
                               {capitalize(field.label)}
                             </Col>
                             <Col sm={10}>
-                              <InputTypeCreditCard options={field.options} onChange={this.handleChange} />                   
+                              <InputTypeCreditCard options={field.options} onChange={this.handleChange} style={this.props.style}/>                   
                             </Col>
                           </div>
                         }
                         {field.className !== 'horizontal' &&
                           <div>
                             <ControlLabel>{capitalize(field.label)}</ControlLabel>
-                            <InputTypeCreditCard onChange={this.handleChange} />                   
+                            <InputTypeCreditCard onChange={this.handleChange} style={this.props.style}/>                   
                           </div>
                         }
                       </FormGroup>)
         break;
+
       case 'textarea':
         value = value || this.props.defaultValue || '';
         let after;
@@ -173,6 +176,7 @@ class InputField extends React.Component {
                         />
                       )
         break;
+
       case 'date':
       case 'datetime':
         const timeFormat = field.type === 'date' ? false : true;
@@ -253,6 +257,7 @@ class InputField extends React.Component {
         </FormGroup>
         )
         break;
+
       case 'dropzone':
         this.input = (
           <FormGroup>
@@ -393,6 +398,7 @@ class InputField extends React.Component {
           post={field.post}
           button={field.button}
           name={field.name}
+          maxLength={field.maxLength}
           disabled={field.disabled}
           label={field.label && `${capitalize(field.label)}`}
           help={field.description}

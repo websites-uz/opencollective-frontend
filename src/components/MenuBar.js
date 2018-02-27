@@ -69,7 +69,7 @@ class MenuBar extends React.Component {
       return menuItem.position && menuItem.position > (top);
     })
     if (selectedMenuItem) {
-      history.replaceState(undefined, undefined, `#${selectedMenuItem.anchor}`);
+      history.replaceState(undefined, undefined, (selectedMenuItem.anchor === this.state.menuItems[0].anchor) ? '#' : `#${selectedMenuItem.anchor}`);
       this.setState({ selectedAnchor: selectedMenuItem.anchor });
     }
   }
@@ -203,7 +203,7 @@ class MenuBar extends React.Component {
           float: left;
         }
         `}</style>
-        {this.state.menuItems.map((item, index) =>
+        { this.state.menuItems.map((item, index) =>
           <div className={`item ${item.anchor} ${this.state.selectedAnchor === item.anchor && 'selected'}`} key={`item-${index}-${item.link}`}>
             <Link route={item.link} animate={{offset}}>
               { this.messages[item.anchor] ? intl.formatMessage(this.messages[item.anchor]): item.anchor }
@@ -214,7 +214,7 @@ class MenuBar extends React.Component {
           <div className="admin">
             <div className="separator" />
             <div className="item editCollective">
-              <Link route={`/${collective.slug}/edit`}>
+              <Link route={`${collective.path}/edit`}>
                 <div className="icon edit" />
                 { intl.formatMessage(this.messages[`menu.edit.${collective.type.toLowerCase()}`])}
               </Link>

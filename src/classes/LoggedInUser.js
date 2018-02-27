@@ -30,8 +30,26 @@ LoggedInUser.prototype.hasRole = function(roles, collective) {
  */
 LoggedInUser.prototype.canEditCollective = function(collective) {
   if (!collective) return false;
+  if (collective.type === 'EVENT') return this.canEditEvent(collective);
   return (get(collective, 'createdByUser.id') === this.id) 
   || intersection(this.roles[collective.slug], ['HOST','ADMIN']).length > 0;
+}
+
+/**
+ * CanEditEventif LoggedInUser is
+ * - creator of the event
+ * - is admin of the event
+ * - is admin of the parent collective
+ */
+LoggedInUser.prototype.canEditEvent= function(eventCollective) {
+  if (!eventCollective) return false;
+  if (eventCollective.type !== 'EVENT') {
+    console.error(`LoggedInUser.canEditEvent: ${eventCollective.slug} is not of type EVENT`);
+    return false;
+  }
+  return (get(eventCollective, 'createdByUser.id') === this.id)
+    || intersection(this.roles[eventCollective.slug], ['ADMIN']).length > 0
+    || intersection(this.roles[get(eventCollective, 'parentCollective.slug')], ['ADMIN']).length > 0;
 }
 
 /**
@@ -81,6 +99,17 @@ LoggedInUser.prototype.canPayExpense = function(expense) {
     return true;
   }
   return false;                  
+}
+
+/**
+ * canEditSubscription if LoggedInUser is ADMIN of the collective
+ */
+LoggedInUser.prototype.canEditSubscription = function(order) {
+  if (!order) return false;
+  if ((this.roles[order.fromCollective.slug] === 'ADMIN') || (order.fromCollective.createdByUser && order.fromCollective.createdByUser.id === this.id)) {
+    return true;
+  }
+  return false;
 }
 
 LoggedInUser.prototype.isRoot = function() {

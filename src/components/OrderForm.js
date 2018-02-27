@@ -124,24 +124,30 @@ class OrderForm extends React.Component {
 
     this.fields = [
       {
-        name: 'firstName'
+        name: 'firstName',
+        maxLength: 127
       },
       {
-        name: 'lastName'
+        name: 'lastName',
+        maxLength: 128
       },
       {
-        name: 'company'
+        name: 'company',
+        maxLength: 255
       },
       {
-        name: 'website'
+        name: 'website',
+        maxLength: 255
       },
       {
         name: 'twitterHandle',
         pre: '@',
+        maxLength: 255,
         validate: (val) => val.match(/^[A-Za-z0-9_]{1,15}$/)
       },
       {
-        name: 'description'
+        name: 'description',
+        maxLength: 255
       }
     ]
 
@@ -887,14 +893,6 @@ class OrderForm extends React.Component {
                             name="creditcard"
                             className="horizontal"
                             onChange={(creditcardObject) => this.handleChange("creditcard", creditcardObject)}
-                            />
-                          <InputField
-                            description={intl.formatMessage(this.messages['creditcard.save'], { type: fromCollective.type && fromCollective.type.toLowerCase() || 'user' })}
-                            className="horizontal"
-                            name="saveCreditCard"
-                            type="checkbox"
-                            defaultValue={true}
-                            onChange={value => this.handleChange("creditcard", "save", value)}
                             />
                         </div>
                       }

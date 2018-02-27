@@ -10,7 +10,7 @@ import ExpenseDetails from './ExpenseDetails';
 import ApproveExpenseBtn from './ApproveExpenseBtn';
 import RejectExpenseBtn from './RejectExpenseBtn';
 import PayExpenseBtn from './PayExpenseBtn';
-import { Link } from '../server/pages';
+import Link from './Link';
 import SmallButton from './SmallButton';
 
 class Expense extends React.Component {
@@ -158,6 +158,9 @@ class Expense extends React.Component {
             color: #919599;
             font-size: 1.2rem;
           }
+          .meta .metaItem {
+            margin: 0 0.2rem;
+          }
           .meta .collective {
             margin-right: 0.2rem;
           }
@@ -238,10 +241,10 @@ class Expense extends React.Component {
             <div className="meta">
               <span className="incurredAt"><FormattedDate value={expense.incurredAt} day="numeric" month="numeric" /></span> |&nbsp;
               { includeHostedCollectives &&
-                <span className="collective"><Link route={`/${expense.collective.slug}`}><a>{expense.collective.slug}</a></Link> (balance: {formatCurrency(expense.collective.stats.balance, expense.collective.currency)}) | </span>
+                <span className="collective"><Link route={`/${expense.collective.slug}`}>{expense.collective.slug}</Link> (balance: {formatCurrency(expense.collective.stats.balance, expense.collective.currency)}) | </span>
               }
               <span className="status">{intl.formatMessage(this.messages[status])}</span> | 
-              {` ${capitalize(expense.category)}`}
+              <span className="metaItem"><Link route={`/${expense.collective.slug}/expenses/${expense.category}`}>{capitalize(expense.category)}</Link></span>
               { editable && LoggedInUser && LoggedInUser.canEditExpense(expense) &&
                 <span> | <a className="toggleEditExpense" onClick={this.toggleEdit}>{intl.formatMessage(this.messages[`${mode === 'edit' ? 'cancelEdit' : 'edit'}`])}</a></span>
               }

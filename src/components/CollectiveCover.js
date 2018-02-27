@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import withIntl from '../lib/withIntl';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link } from '../server/pages';
-import { union, get } from 'lodash';
+import { union, get, uniqBy } from 'lodash';
 import { prettyUrl, formatCurrency, imagePreview } from '../lib/utils';
 import { Router } from '../server/pages';
 import Currency from './Currency';
@@ -91,7 +91,7 @@ ${description}`
       const members = collective.members.filter(m => m.role === 'MEMBER');
       const backers = collective.members.filter(m => m.role === 'BACKER');
       backers.sort((a, b) => b.stats && b.stats.totalDonations - a.stats && a.stats.totalDonations);
-      membersPreview = union(admins, members, backers).filter(m => m.member).slice(0, 5);
+      membersPreview = uniqBy(union(admins, members, backers).filter(m => m.member), m => m.member.id).slice(0, 5);
     }
     const additionalBackers = (get(stats, 'backers.all') || (get(collective, 'members') || []).length) - membersPreview.length;
 
@@ -265,7 +265,8 @@ ${description}`
             { company && company.substr(0,1) !== '@' && <p className="company">{company}</p> }
             { description && <p className="description">{description}</p> }
             <div className="contact">
-              { collective.host && <div className="host"><label><FormattedMessage id="collective.cover.hostedBy" defaultMessage="Hosted by" /></label><Link route={`/${collective.host.slug}`}><a>{collective.host.name} </a></Link></div> }
+              { collective.host && collective.isActive && <div className="host"><label><FormattedMessage id="collective.cover.hostedBy" defaultMessage="Hosted by" /></label><Link route={`/${collective.host.slug}`}><a>{collective.host.name} </a></Link></div> }
+              { collective.host && !collective.isActive && <div className="host"><label><FormattedMessage id="collective.cover.pendingApprovalFrom" defaultMessage="Pending approval from" /></label><Link route={`/${collective.host.slug}`}><a>{collective.host.name} </a></Link></div> }
               { twitterHandle && <div className="twitterHandle"><a href={`https://twitter.com/${twitterHandle}`} target="_blank">@{twitterHandle}</a></div> }
               { website && <div className="website"><a href={website} target="_blank">{prettyUrl(website) }</a></div> }
             </div>
