@@ -33,7 +33,7 @@ describe("EditEventForm component", () => {
     component.find('.actions Button').simulate('click');
     // console.log("labels", component.find('label').map(node => node.text()));
     expect(component.find('label').first().text()).toEqual('Name');
-    expect(component.find('input[name="slug"]').exists()).toBeTrue;
+    expect(component.find('input[name="slug"]').exists()).toBe(true);
     expect(component.find('input[name="slug"]').prop("value")).toEqual(event.slug.replace(/.*\//,''));
   });
 });

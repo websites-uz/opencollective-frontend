@@ -118,7 +118,7 @@ describe("OrderForm component", () => {
 
       component = mountComponent({ collective, order, onSubmit })
 
-      expect(component.find('input[type="email"]').exists()).toBeTrue;
+      expect(component.find('input[type="email"]').exists()).toBe(true);
       for (const prop in LoggedInUser) {
         fillValue(component, prop, LoggedInUser[prop]);
       }
@@ -188,7 +188,7 @@ describe("OrderForm component", () => {
       component = mountComponent({ collective, order, onSubmit, LoggedInUser })
       component.setProps({ LoggedInUser });
 
-      expect(component.find('input[type="email"]').exists()).toBeFalse;
+      expect(component.find('input[type="email"]').exists()).toBe(false);
       fillValue(component, 'publicMessage', 'public message');
 
       for (const prop in LoggedInUser) {
@@ -196,7 +196,7 @@ describe("OrderForm component", () => {
           expectValue(component, prop, LoggedInUser[prop]);
         }
       }
-      expect(component.find('.creditcardSelector').exists()).toBeTrue;
+      expect(component.find('.creditcardSelector').exists()).toBe(true);
       expect(component.find('.creditcardSelector').html()).toContain(LoggedInUser.paymentMethods[0].identifier);
       setTimeout(() => {
         component.find('.submit button').simulate('click');

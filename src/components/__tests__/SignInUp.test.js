@@ -53,7 +53,7 @@ describe("Register with credit card", () => {
   ).dive();
 
   it('renders the credit card form', () => {
-    expect(component.find('.CreditCardForm').exists()).toBeTrue;
+    expect(component.find('.CreditCardForm').exists()).toBe(true);
   });
 
 })

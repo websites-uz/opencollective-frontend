@@ -1,7 +1,13 @@
 {
-  "extends": "opencollective",
+  "extends": [
+    "opencollective",
+    "plugin:jest/recommended"
+  ],
+  "plugins": [
+    "jest"
+  ],
   "env": {
-    "jest": true
+    "jest/globals": true
   },
   "rules": {
     // we still use console even on frontend

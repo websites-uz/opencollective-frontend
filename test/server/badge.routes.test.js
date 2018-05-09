@@ -8,7 +8,7 @@ const cacheBurst = `?cacheBurst=${Math.round(Math.random()*100000)}`;
 describe("badge.routes.test.js", () => {
   describe("backerType (backers|sponsors)", () => {
 
-    test("returns a 404 if slug doesn't exist", async () => {
+    test("returns a 404 if slug doesn't exist (backers badge)", async () => {
       const res = await r2(`${WEBSITE_URL}/webpack222/backers/badge.svg${cacheBurst}`).response;
       expect(res.status).toEqual(404);
     });
@@ -23,7 +23,7 @@ describe("badge.routes.test.js", () => {
       expect(res).toMatch(/sponsors<\/text>/);
     });
 
-    test("returns a 404 if slug doesn't exist", async () => {
+    test("returns a 404 if slug doesn't exist (backer avatar)", async () => {
       const res = await r2(`${WEBSITE_URL}/apex222/backers/0/avatar.svg${cacheBurst}`).response;
       expect(res.status).toEqual(404);
     });
