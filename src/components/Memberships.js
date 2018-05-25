@@ -11,12 +11,23 @@ class Collectives extends React.Component {
 
   render() {
     const memberships = [...this.props.memberships];
-    memberships.sort((a, b) => b.stats.totalDonations - a.stats.totalDonations);
+
+    // sort by totalDonations, then createdAt date, then alphabetically
+    // it's important to have a consistent sorting across environments and browsers
+    memberships.sort((a, b) => {
+      if (b.stats.totalDonations !== a.stats.totalDonations) {
+        return b.stats.totalDonations - a.stats.totalDonations;
+      } else if (a.createdAt !== b.createdAt) {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      } else {
+        return a.collective.name.localeCompare(b.collective.name);
+      }
+    });
 
     if (!memberships || memberships.length === 0) return (<div />);
 
     return (
-      <div className="Collectives" >
+      <div className="Collectives">
         <style jsx>{`
         .Collectives {
           margin: 3rem auto 3rem;
@@ -26,13 +37,16 @@ class Collectives extends React.Component {
           flex-wrap: wrap;
           justify-content: center;
         }
-        `}</style>
-        {memberships.map((membership, index) =>
-          (<Membership
-            key={`membership${index}`}
+        `}
+        </style>
+
+        {memberships.map(membership => (
+          <Membership
+            key={membership.id}
             membership={membership}
             LoggedInUser={this.props.LoggedInUser}
-            />)
+            />
+          )
         )}
       </div>
     )

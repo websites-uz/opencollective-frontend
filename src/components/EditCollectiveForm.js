@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import InputField from '../components/InputField';
-import EditTiers from '../components/EditTiers';
-import EditGoals from '../components/EditGoals';
-import EditMembers from '../components/EditMembers';
-import EditPaymentMethods from '../components/EditPaymentMethods';
-import EditConnectedAccounts from '../components/EditConnectedAccounts';
-import ExportData from '../components/ExportData';
+import InputField from './InputField';
+import EditTiers from './EditTiers';
+import EditGoals from './EditGoals';
+import EditMembers from './EditMembers';
+import EditPaymentMethods from './EditPaymentMethods';
+import EditConnectedAccounts from './EditConnectedAccounts';
+import ExportData from './ExportData';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import { defaultBackgroundImage } from '../constants/collectives';
 import withIntl from '../lib/withIntl';
@@ -93,7 +93,7 @@ class EditCollectiveForm extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.collective && (!this.props.collective || nextProps.collective.name != this.props.collective.name)) {
       this.setState({ collective: nextProps.collective, tiers: nextProps.collective.tiers });
     }

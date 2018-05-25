@@ -22,9 +22,10 @@ class OrderForm extends React.Component {
     order: PropTypes.object.isRequired, // { tier: {}, quantity: Int, interval: String, totalAmount: Int }
     collective: PropTypes.object.isRequired,
     LoggedInUser: PropTypes.object,
-    onSubmit: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func,
     matchingFund: PropTypes.string,
-    redeemFlow: PropTypes.bool
+    redeemFlow: PropTypes.bool,
+    intl: PropTypes.object
   }
 
   constructor(props) {
@@ -168,7 +169,7 @@ class OrderForm extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this.componentWillReceiveProps(this.props);
+    this.UNSAFE_componentWillReceiveProps(this.props);
   }
 
   populatePaymentMethodTypes() {
@@ -251,7 +252,7 @@ class OrderForm extends React.Component {
     return fromCollectiveOptions;
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     const { LoggedInUser } = props;
     if (!LoggedInUser) return;
     if (!this._isMounted) return; // Fixes error: Can only update a mounted or mounting component

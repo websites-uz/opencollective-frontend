@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Error from '../components/Error';
+import Error from './Error';
 import withIntl from '../lib/withIntl';
-import Updates from '../components/Updates';
+import Updates from './Updates';
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { FormattedMessage } from 'react-intl'
@@ -26,7 +26,7 @@ class UpdatesWithData extends React.Component {
     }
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     const { data, collective } = this.props;
     const { LoggedInUser } = newProps;
     if (LoggedInUser && LoggedInUser.canEditCollective(collective)) {

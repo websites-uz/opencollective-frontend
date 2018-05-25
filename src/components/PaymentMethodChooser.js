@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import { defineMessages } from 'react-intl';
 import withIntl from '../lib/withIntl';
-import InputField from '../components/InputField';
+import InputField from './InputField';
 import { getStripeToken } from '../lib/stripe';
 
 import SmallButton from './SmallButton';
@@ -48,7 +48,7 @@ class PaymentMethodChooser extends React.Component {
     });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     // TODO: Remove these hacky fixes
     // Most likely means need to rework the logic split between this and SubscriptionCard component
 
