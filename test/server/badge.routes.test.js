@@ -57,17 +57,17 @@ describe("badge.routes.test.js", () => {
 
   describe("custom tiers", () => {
     test("loads the badge (svg)", async () => {
-      const resText = await fetchText('/apex/tiers/sponsors/badge.svg');
-      expect(resText).toMatch(/Sponsors<\/text>/);
+      const res = await r2(`${WEBSITE_URL}/apex/tiers/sponsors/badge.svg${cacheBurst}`).text;
+      expect(res).toMatch(/Sponsors<\/text>/);
     }, timeout);
 
     test("loads the banner (svg)", async () => {
-      const res = await fetchResponse(`/apex/tiers/backers.svg`);
+      const res = await r2(`${WEBSITE_URL}/apex/tiers/backers.svg${cacheBurst}`).response;
       expect(res.status).toEqual(200);
     }, timeout);
 
     test("loads the banner (png)", async () => {
-      const res = await fetchResponse(`/apex/tiers/backers.png`);
+      const res = await r2(`${WEBSITE_URL}/apex/tiers/backers.png${cacheBurst}`).response;
       expect(res.status).toEqual(200);
     }, timeout);
 
