@@ -27,7 +27,6 @@ describe('collective page', () => {
 
   it('opens all expenses page', () => {
     cy.get('#expenses .ViewAllExpensesBtn').click();
-    cy.wait(300);
     cy.get('.ExpensesPage .ExpensesStats').contains('Available balance');
     cy.get('.ExpensesPage .ExpensesStats').contains('Engineering ($3,808)');
     cy.get('.ExpensesPage .ExpensesStats').contains('TJ Holowaychuk ($3,391)');
@@ -36,7 +35,6 @@ describe('collective page', () => {
 
   it('opens new expense page', () => {
     cy.get('.desktopOnly button.submitExpense').click();
-    cy.wait(500);
     cy.get('.ExpensesPage .CreateExpenseForm').contains(
       'Sign up or login to submit an expense',
     );
@@ -52,7 +50,6 @@ describe('collective page', () => {
 
   it('opens all transactions page', () => {
     cy.get('#transactions .ViewAllTransactionsBtn').click();
-    cy.wait(500);
     cy.get('.TransactionsPage .itemsList .transaction').should(
       'have.length',
       20,
