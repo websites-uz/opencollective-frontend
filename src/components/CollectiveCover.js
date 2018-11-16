@@ -121,7 +121,6 @@ ${description}`;
       stats,
     } = collective;
 
-    const href = this.props.href || collective.path || `/${collective.slug}`;
     const title = this.props.title || collective.name;
     const backgroundImage = imagePreview(
       collective.backgroundImage ||
@@ -354,7 +353,11 @@ ${description}`;
           <div className="backgroundCover" style={style} />
 
           <div className="content">
-            <Link route={href} className="goBack">
+            <Link
+              route="collective"
+              params={{ slug: collective.slug }}
+              className="goBack"
+            >
               {collective.type === 'USER' && (
                 <Avatar
                   src={logo}
@@ -379,34 +382,31 @@ ${description}`;
             )}
             {className !== 'small' && (
               <div>
-                {company &&
-                  company.substr(0, 1) === '@' && (
-                    <p className="company">
-                      <Link route={`/${company.substr(1)}`}>
-                        {company.substr(1)}
-                      </Link>
-                    </p>
-                  )}
-                {company &&
-                  company.substr(0, 1) !== '@' && (
-                    <p className="company">{company}</p>
-                  )}
+                {company && company.substr(0, 1) === '@' && (
+                  <p className="company">
+                    <Link route={`/${company.substr(1)}`}>
+                      {company.substr(1)}
+                    </Link>
+                  </p>
+                )}
+                {company && company.substr(0, 1) !== '@' && (
+                  <p className="company">{company}</p>
+                )}
                 {collective.type !== 'EVENT' && (
                   <div className="contact">
-                    {collective.host &&
-                      collective.isActive && (
-                        <div className="host">
-                          <label>
-                            <FormattedMessage
-                              id="collective.cover.hostedBy"
-                              defaultMessage="Hosted by"
-                            />
-                          </label>
-                          <Link route={`/${collective.host.slug}`}>
-                            {collective.host.name}{' '}
-                          </Link>
-                        </div>
-                      )}
+                    {collective.host && collective.isActive && (
+                      <div className="host">
+                        <label>
+                          <FormattedMessage
+                            id="collective.cover.hostedBy"
+                            defaultMessage="Hosted by"
+                          />
+                        </label>
+                        <Link route={`/${collective.host.slug}`}>
+                          {collective.host.name}{' '}
+                        </Link>
+                      </div>
+                    )}
                     {collective.host &&
                       !collective.isActive &&
                       LoggedInUser &&
@@ -467,8 +467,9 @@ ${description}`;
                     </div>
                   </div>
                 )}
-                {collective.type !== 'COLLECTIVE' &&
-                  cta && <div className="cta">{cta}</div>}
+                {collective.type !== 'COLLECTIVE' && cta && (
+                  <div className="cta">{cta}</div>
+                )}
               </div>
             )}
           </div>
@@ -511,24 +512,22 @@ ${description}`;
             collective.isActive &&
             collective.host && (
               <div className="statsContainer">
-                {className !== 'small' &&
-                  collective.type === 'COLLECTIVE' && (
-                    <div className="topContributors">
-                      <TopBackersCoverWithData
-                        collective={this.props.collective}
-                        LoggedInUser={LoggedInUser}
-                        limit={10}
-                      />
-                    </div>
-                  )}
-
-                {className !== 'small' &&
-                  collective.type === 'COLLECTIVE' && (
-                    <GoalsCover
-                      collective={collective}
+                {className !== 'small' && collective.type === 'COLLECTIVE' && (
+                  <div className="topContributors">
+                    <TopBackersCoverWithData
+                      collective={this.props.collective}
                       LoggedInUser={LoggedInUser}
+                      limit={10}
                     />
-                  )}
+                  </div>
+                )}
+
+                {className !== 'small' && collective.type === 'COLLECTIVE' && (
+                  <GoalsCover
+                    collective={collective}
+                    LoggedInUser={LoggedInUser}
+                  />
+                )}
 
                 {cta && <div className="cta">{cta}</div>}
               </div>
