@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from '../server/pages';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import withIntl from '../lib/withIntl';
+import { withUser } from './UserProvider';
 import { formatCurrency, capitalize } from '../lib/utils';
 import { Badge } from 'react-bootstrap';
 import { get, uniqBy } from 'lodash';
@@ -60,9 +61,8 @@ class TopBarProfileMenu extends React.Component {
 
   logout = () => {
     this.setState({ showProfileMenu: false, status: 'loggingout' });
-    window.localStorage.removeItem('accessToken');
-    window.localStorage.removeItem('LoggedInUser');
-    window.location.reload();
+    this.props.logout();
+    this.setState({ status: 'loggedout' });
   };
 
   onClickOutside = () => {
@@ -197,10 +197,7 @@ class TopBarProfileMenu extends React.Component {
                   >
                     <Flex alignItems="center">
                       <Avatar
-                        src={get(
-                          membership,
-                          'collective.image',
-                        )}
+                        src={get(membership, 'collective.image')}
                         type={get(membership, 'collective.type')}
                         name={get(membership, 'collective.name')}
                         radius="2.8rem"
@@ -267,10 +264,7 @@ class TopBarProfileMenu extends React.Component {
                   >
                     <Flex alignItems="center">
                       <Avatar
-                        src={get(
-                          membership,
-                          'collective.image',
-                        )}
+                        src={get(membership, 'collective.image')}
                         type={get(membership, 'collective.type')}
                         name={get(membership, 'collective.name')}
                         radius="2.8rem"
@@ -439,12 +433,15 @@ class TopBarProfileMenu extends React.Component {
 
   render() {
     const { loading } = this.state;
-    const { LoggedInUser } = this.props;
+    const { LoggedInUser, loadingLoggedInUser } = this.props;
 
     let status;
     if (this.state.status) {
       status = this.state.status;
-    } else if (loading && typeof LoggedInUser === 'undefined') {
+    } else if (
+      (loading || loadingLoggedInUser) &&
+      typeof LoggedInUser === 'undefined'
+    ) {
       status = 'loading';
     } else if (!LoggedInUser) {
       status = 'loggedout';
@@ -488,4 +485,4 @@ class TopBarProfileMenu extends React.Component {
   }
 }
 
-export default withIntl(TopBarProfileMenu);
+export default withIntl(withUser(TopBarProfileMenu));

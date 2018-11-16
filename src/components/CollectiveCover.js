@@ -535,13 +535,7 @@ ${description}`;
             )}
         </div>
 
-        {className !== 'small' && (
-          <MenuBar
-            collective={collective}
-            LoggedInUser={LoggedInUser}
-            cta={cta}
-          />
-        )}
+        {className !== 'small' && <MenuBar collective={collective} cta={cta} />}
       </div>
     );
   }

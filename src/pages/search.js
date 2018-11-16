@@ -20,9 +20,7 @@ import colors from '../constants/colors';
 
 import { addSearchQueryData } from '../graphql/queries';
 
-import withData from '../lib/withData';
 import withIntl from '../lib/withIntl';
-import withLoggedInUser from '../lib/withLoggedInUser';
 
 const { USE_PLEDGES } = process.env;
 
@@ -66,7 +64,6 @@ class SearchPage extends React.Component {
     offset: PropTypes.number, // for addSearchQueryData
     router: PropTypes.object, // from next.js
     data: PropTypes.object.isRequired, // from withData
-    getLoggedInUser: PropTypes.func.isRequired, // from withLoggedInUser
     usePledges: PropTypes.bool,
   };
 
@@ -78,19 +75,6 @@ class SearchPage extends React.Component {
     loadingUserLogin: true,
     LoggedInUser: {},
   };
-
-  async componentDidMount() {
-    const { getLoggedInUser } = this.props;
-    try {
-      const LoggedInUser = await getLoggedInUser();
-      this.setState({
-        loadingUserLogin: false,
-        LoggedInUser,
-      });
-    } catch (error) {
-      this.setState({ loadingUserLogin: false });
-    }
-  }
 
   refetch = event => {
     event.preventDefault();
@@ -107,8 +91,9 @@ class SearchPage extends React.Component {
       data: { error, loading, search },
       term = '',
       usePledges,
+      loadingLoggedInUser,
+      LoggedInUser,
     } = this.props;
-    const { loadingUserLogin, LoggedInUser } = this.state;
 
     if (error) {
       return <ErrorPage data={this.props.data} />;
@@ -122,7 +107,7 @@ class SearchPage extends React.Component {
       <div>
         <Header
           title="Search"
-          className={loadingUserLogin ? 'loading' : ''}
+          className={loadingLoggedInUser ? 'loading' : ''}
           LoggedInUser={LoggedInUser}
           showSearch={false}
         />
@@ -182,7 +167,11 @@ class SearchPage extends React.Component {
                       </em>
                     </p>
                     {usePledges && (
-                      <Link route="createPledge" params={{ name: term }} passHref>
+                      <Link
+                        route="createPledge"
+                        params={{ name: term }}
+                        passHref
+                      >
                         <StyledLink
                           display="block"
                           fontSize="Paragraph"
@@ -242,7 +231,8 @@ class SearchPage extends React.Component {
                 >
                   <p>
                     <em>
-                      If you don&apos;t see the collective you&apos;re searching for:
+                      If you don&apos;t see the collective you&apos;re searching
+                      for:
                     </em>
                   </p>
 
@@ -274,6 +264,4 @@ class SearchPage extends React.Component {
 
 export { SearchPage as MockSearchPage };
 
-export default withData(
-  withIntl(withLoggedInUser(addSearchQueryData(withRouter(SearchPage)))),
-);
+export default withIntl(addSearchQueryData(withRouter(SearchPage)));

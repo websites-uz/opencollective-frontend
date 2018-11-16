@@ -13,6 +13,7 @@ import { Pencil } from 'styled-icons/octicons/Pencil.cjs';
 
 import colors from '../constants/colors';
 import withIntl from '../lib/withIntl';
+import { withUser } from './UserProvider';
 
 import Avatar from './Avatar';
 import Logo from './Logo';
@@ -344,15 +345,14 @@ class MenuBar extends React.Component {
           `}
         </style>
         {this.state.sticky && cta && cta}
-        {['COLLECTIVE', 'EVENT'].indexOf(collective.type) !== -1 &&
-          (
-            <Button
-              className="submitExpense darkBackground"
-              href={`${collective.path}/expenses/new`}
-            >
-              <FormattedMessage
-                id="menu.submitExpense"
-                defaultMessage="Submit Expense"
+        {['COLLECTIVE', 'EVENT'].indexOf(collective.type) !== -1 && (
+          <Button
+            className="submitExpense darkBackground"
+            href={`${collective.path}/expenses/new`}
+          >
+            <FormattedMessage
+              id="menu.submitExpense"
+              defaultMessage="Submit Expense"
             />
           </Button>
         )}
@@ -363,7 +363,7 @@ class MenuBar extends React.Component {
         collective.type ===
           'ORGANIZATION' /* We can only create a prepaid card for an organization */ &&
         !collective.isHost /* If the collective being browsed is a host, don't show either */ && (
-        <div>
+            <div>
               <div className="item editCollective">
                 <AddFundsModal />
                 <Button
@@ -676,4 +676,4 @@ const addMutationForAddFundsToOrg = graphql(addFundsToOrgQuery, {
   }),
 });
 
-export default addMutationForAddFundsToOrg(withIntl(MenuBar));
+export default addMutationForAddFundsToOrg(withIntl(withUser(MenuBar)));

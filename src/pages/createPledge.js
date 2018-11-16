@@ -8,9 +8,8 @@ import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { themeGet } from 'styled-system';
 
-import withData from '../lib/withData';
-import withLoggedInUser from '../lib/withLoggedInUser';
 import withIntl from '../lib/withIntl';
+import { withUser } from '../components/UserProvider';
 import { addCreateOrderMutation } from '../graphql/mutations';
 import { Link, Router } from '../server/pages';
 import { imagePreview } from '../lib/utils';
@@ -135,19 +134,6 @@ class CreatePledgePage extends React.Component {
     submitting: false,
   };
 
-  async componentDidMount() {
-    const { getLoggedInUser } = this.props;
-    try {
-      const LoggedInUser = getLoggedInUser && (await getLoggedInUser());
-      this.setState({
-        loadingUserLogin: false,
-        LoggedInUser,
-      });
-    } catch (error) {
-      this.setState({ loadingUserLogin: false });
-    }
-  }
-
   async createOrder(event) {
     event.preventDefault();
     const {
@@ -212,13 +198,15 @@ class CreatePledgePage extends React.Component {
   }
 
   render() {
+    console.log(this.props);
+    const { errorMessage, submitting } = this.state;
     const {
-      errorMessage,
-      loadingUserLogin,
+      data = {},
+      name,
+      slug,
       LoggedInUser,
-      submitting,
-    } = this.state;
-    const { data = {}, name, slug } = this.props;
+      loadingLoggedInUser,
+    } = this.props;
 
     const profiles =
       LoggedInUser &&
@@ -244,7 +232,7 @@ class CreatePledgePage extends React.Component {
       <Fragment>
         <Header
           title="Make a Pledge"
-          className={loadingUserLogin ? 'loading' : ''}
+          className={loadingLoggedInUser ? 'loading' : ''}
           LoggedInUser={LoggedInUser}
         />
         <Body>
@@ -283,13 +271,13 @@ class CreatePledgePage extends React.Component {
                 fulfill your pledge.
               </P>
 
-              {loadingUserLogin && (
+              {loadingLoggedInUser && (
                 <P my={3} color="black.500">
                   Loading profile...
                 </P>
               )}
 
-              {!loadingUserLogin &&
+              {!loadingLoggedInUser &&
                 !LoggedInUser && (
                   <P
                     mt={[5, null, 4]}
@@ -309,7 +297,7 @@ class CreatePledgePage extends React.Component {
                   </P>
                 )}
 
-              {!loadingUserLogin &&
+              {!loadingLoggedInUser &&
                 LoggedInUser && (
                   <form onSubmit={this.createOrder.bind(this)}>
                     {!slug && (
@@ -361,7 +349,7 @@ class CreatePledgePage extends React.Component {
                               prepend="https://opencollective.com/"
                               id="slug"
                               name="slug"
-                              defaultValue={slugify(name)}
+                              defaultValue={slugify(name || '')}
                             />
                           </Flex>
                         </Flex>
@@ -674,6 +662,4 @@ const addGraphQL = compose(
 );
 
 export { CreatePledgePage as MockCreatePledgePage };
-export default withIntl(
-  withData(withLoggedInUser(addGraphQL(CreatePledgePage))),
-);
+export default withIntl(withUser(addGraphQL(CreatePledgePage)));

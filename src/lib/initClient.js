@@ -6,6 +6,7 @@ import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { ApolloLink } from 'apollo-link';
 import { onError } from 'apollo-link-error';
+import { setContext } from 'apollo-link-context';
 import {
   InMemoryCache,
   IntrospectionFragmentMatcher,
@@ -29,11 +30,16 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
   },
 });
 
-function createClient(initialState, options = {}) {
-  const headers = {};
-  if (options.accessToken) {
-    headers.authorization = `Bearer ${options.accessToken}`;
-  }
+function createClient(initialState) {
+  const authLink = setContext((_, { headers }) => {
+    const token = process.browser && window.localStorage.getItem('accessToken');
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : '',
+      },
+    };
+  });
 
   const cache = new InMemoryCache({
     dataIdFromObject: result =>
@@ -67,10 +73,9 @@ function createClient(initialState, options = {}) {
   const httpLink = new HttpLink({
     uri: getGraphqlUrl(),
     fetch,
-    headers,
   });
 
-  const link = ApolloLink.from([errorLink, httpLink]);
+  const link = ApolloLink.from([errorLink, authLink.concat(httpLink)]);
 
   return new ApolloClient({
     connectToDevTools: process.browser,
@@ -80,18 +85,16 @@ function createClient(initialState, options = {}) {
   });
 }
 
-export default function initClient(initialState, options = {}) {
+export default function initClient(initialState) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
   if (!process.browser) {
-    return createClient(initialState, options);
+    return createClient(initialState);
   }
 
   // Reuse client on the client-side
   if (!apolloClient) {
-    options.accessToken =
-      process.browser && window.localStorage.getItem('accessToken');
-    apolloClient = createClient(initialState, options);
+    apolloClient = createClient(initialState);
   }
 
   return apolloClient;

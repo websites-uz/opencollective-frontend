@@ -31,9 +31,7 @@ import Carousel from '../components/Carousel';
 import Currency from '../components/Currency';
 import ErrorPage from '../components/ErrorPage';
 
-import withData from '../lib/withData';
 import withIntl from '../lib/withIntl';
-import withLoggedInUser from '../lib/withLoggedInUser';
 
 const carouselContent = [
   {
@@ -153,7 +151,6 @@ class HomePage extends React.Component {
 
   static propTypes = {
     data: PropTypes.object.isRequired, // from withData
-    getLoggedInUser: PropTypes.func.isRequired, // from withLoggedInUser
   };
 
   state = {
@@ -161,9 +158,6 @@ class HomePage extends React.Component {
   };
 
   async componentDidMount() {
-    const LoggedInUser = await this.props.getLoggedInUser();
-    this.setState({ LoggedInUser });
-
     // separate request to not block showing LoggedInUser
     const { stats } = await fetch(`${getBaseApiUrl()}/homepage`).then(
       response => response.json(),
@@ -176,6 +170,7 @@ class HomePage extends React.Component {
       return <ErrorPage data={this.props.data} />;
     }
 
+    const { LoggedInUser } = this.props;
     const {
       topSpenders: { collectives: topSpenders },
       backers: { collectives: backers },
@@ -189,7 +184,6 @@ class HomePage extends React.Component {
       transactions: { transactions },
     } = this.props.data;
     const {
-      LoggedInUser,
       stats: { totalAnnualBudget, totalCollectives, totalDonors },
     } = this.state;
 
@@ -223,21 +217,30 @@ class HomePage extends React.Component {
               justifyContent="space-between"
               mx="auto"
             >
-              <Container
-                width={[1, null, 0.6]}
-                pr={[0, null, 4]}
-              >
-                <H1 fontSize={['H3', null, 'H1']} lineHeight={['H3', null, 'H1']} fontWeight="normal" textAlign="left" mb={4}>
+              <Container width={[1, null, 0.6]} pr={[0, null, 4]}>
+                <H1
+                  fontSize={['H3', null, 'H1']}
+                  lineHeight={['H3', null, 'H1']}
+                  fontWeight="normal"
+                  textAlign="left"
+                  mb={4}
+                >
                   A new form of association, <br />{' '}
                   <strong>transparent by design.</strong>
                 </H1>
 
                 <Container maxWidth={500}>
-                  <P fontSize="LeadParagraph" lineHeight="LeadParagraph" my={3} color="black.700">
+                  <P
+                    fontSize="LeadParagraph"
+                    lineHeight="LeadParagraph"
+                    my={3}
+                    color="black.700"
+                  >
                     The Internet generation needs organizations that reflect who
                     we are; where anybody can contribute to a shared mission;
-                    where leaders can easily change; and where money flows in full
-                    transparency. Create an Open Collective for your community.
+                    where leaders can easily change; and where money flows in
+                    full transparency. Create an Open Collective for your
+                    community.
                   </P>
                 </Container>
 
@@ -415,7 +418,11 @@ class HomePage extends React.Component {
                   <a href="/discover">Learn more.</a>
                 </P>
 
-                <Flex mx={['auto', null, 4]} my={4} justifyContent={['center', null, 'flex-start']}>
+                <Flex
+                  mx={['auto', null, 4]}
+                  my={4}
+                  justifyContent={['center', null, 'flex-start']}
+                >
                   <Link route="/create" passHref>
                     <StyledLink
                       buttonStyle="primary"
@@ -471,8 +478,16 @@ class HomePage extends React.Component {
                   we’ll gladly set them up and get them going.
                 </P>
 
-                <Flex mx={['auto', null, 4]} my={4} justifyContent={['center', null, 'flex-start']}>
-                    <Link route="marketing" params={{ pageSlug: 'become-a-sponsor' }} passHref>
+                <Flex
+                  mx={['auto', null, 4]}
+                  my={4}
+                  justifyContent={['center', null, 'flex-start']}
+                >
+                  <Link
+                    route="marketing"
+                    params={{ pageSlug: 'become-a-sponsor' }}
+                    passHref
+                  >
                     <StyledLink
                       buttonStyle="primary"
                       buttonSize="large"
@@ -534,7 +549,11 @@ class HomePage extends React.Component {
                   <strong>Become part of the movement.</strong>
                 </P>
 
-                <Flex mx={['auto', null, 4]} my={4} justifyContent={['center', null, 'flex-start']}>
+                <Flex
+                  mx={['auto', null, 4]}
+                  my={4}
+                  justifyContent={['center', null, 'flex-start']}
+                >
                   <StyledLink
                     buttonStyle="primary"
                     buttonSize="large"
@@ -577,7 +596,9 @@ class HomePage extends React.Component {
                   pointerEvents="none"
                 >
                   <Container
-                    background={`linear-gradient(to left, ${colors.primary[200]}, rgba(255, 255, 255, 0) 50%)`}
+                    background={`linear-gradient(to left, ${
+                      colors.primary[200]
+                    }, rgba(255, 255, 255, 0) 50%)`}
                     width="100%"
                     height="100%"
                   />
@@ -675,16 +696,20 @@ class HomePage extends React.Component {
                 </H4>
 
                 <P {...sectionDetailStyles}>
-                  <strong>Grow the movement</strong> by becoming a
-                  host of open collectives in your city or your industry. Hosts
-                  are acting as fiscal sponsors. They collect the money on
-                  behalf of the collectives and enable them to issue invoices.
-                  They are mutualising the legal and accounting overhead that
-                  come with creating and maintaining a legal entity so that the
-                  open collectives that they host can focus on their mission.
+                  <strong>Grow the movement</strong> by becoming a host of open
+                  collectives in your city or your industry. Hosts are acting as
+                  fiscal sponsors. They collect the money on behalf of the
+                  collectives and enable them to issue invoices. They are
+                  mutualising the legal and accounting overhead that come with
+                  creating and maintaining a legal entity so that the open
+                  collectives that they host can focus on their mission.
                 </P>
 
-                <Flex mx={['auto', null, 4]} my={4} justifyContent={['center', null, 'flex-start']}>
+                <Flex
+                  mx={['auto', null, 4]}
+                  my={4}
+                  justifyContent={['center', null, 'flex-start']}
+                >
                   <Link route="/hosts" passHref>
                     <StyledLink
                       buttonStyle="primary"
@@ -766,7 +791,12 @@ class HomePage extends React.Component {
             </Container>
 
             <Container mt={5} px={3}>
-              <H3 textAlign="center" fontSize={['H4', null, 'H2']} lineHeight={['H4', null, 'H2']} pb={4}>
+              <H3
+                textAlign="center"
+                fontSize={['H4', null, 'H2']}
+                lineHeight={['H4', null, 'H2']}
+                pb={4}
+              >
                 Spread the word!
               </H3>
 
@@ -871,7 +901,11 @@ class HomePage extends React.Component {
                   that need financial support.
                 </H4>
 
-                <P color="white.full" fontSize="LeadParagraph" lineHeight="24px">
+                <P
+                  color="white.full"
+                  fontSize="LeadParagraph"
+                  lineHeight="24px"
+                >
                   BackYourStack is a community project initiated by Open
                   Collective.
                   <StyledLink
@@ -1057,4 +1091,4 @@ const addHomeData = graphql(query);
 
 export { HomePage as MockHomePage };
 
-export default withData(withLoggedInUser(addHomeData(withIntl(HomePage))));
+export default addHomeData(withIntl(HomePage));

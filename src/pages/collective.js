@@ -8,9 +8,8 @@ import PledgedCollective from '../components/PledgedCollective';
 
 import { addCollectiveData } from '../graphql/queries';
 
-import withData from '../lib/withData';
 import withIntl from '../lib/withIntl';
-import withLoggedInUser from '../lib/withLoggedInUser';
+import { withUser } from '../components/UserProvider';
 
 class CollectivePage extends React.Component {
   static getInitialProps({ req, res, query }) {
@@ -25,7 +24,6 @@ class CollectivePage extends React.Component {
     slug: PropTypes.string, // from getInitialProps, for addCollectiveData
     query: PropTypes.object, // from getInitialProps
     data: PropTypes.object.isRequired, // from withData
-    getLoggedInUser: PropTypes.func.isRequired, // from withLoggedInUser
   };
 
   constructor(props) {
@@ -34,9 +32,7 @@ class CollectivePage extends React.Component {
   }
 
   async componentDidMount() {
-    const { getLoggedInUser, query, data = {} } = this.props;
-    const LoggedInUser = await getLoggedInUser();
-    this.setState({ LoggedInUser });
+    const { LoggedInUser, query, data = {} } = this.props;
     window.OC = window.OC || {};
     window.OC.LoggedInUser = LoggedInUser;
 
@@ -56,8 +52,7 @@ class CollectivePage extends React.Component {
   }
 
   render() {
-    const { data, query } = this.props;
-    const { LoggedInUser } = this.state;
+    const { data, query, LoggedInUser } = this.props;
 
     if (!data.Collective) {
       return <ErrorPage LoggedInUser={LoggedInUser} data={data} />;
@@ -84,6 +79,4 @@ class CollectivePage extends React.Component {
   }
 }
 
-export default withData(
-  withIntl(withLoggedInUser(addCollectiveData(CollectivePage))),
-);
+export default withIntl(withUser(addCollectiveData(CollectivePage)));
