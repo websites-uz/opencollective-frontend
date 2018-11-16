@@ -129,6 +129,7 @@ class ExpensesPage extends React.Component {
 
         <Body>
           <CollectiveCover
+            key={collective.slug}
             collective={collective}
             cta={{
               href: `/${collective.slug}#contribute`,

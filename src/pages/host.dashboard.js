@@ -98,6 +98,7 @@ class HostExpensesPage extends React.Component {
 
         <Body>
           <CollectiveCover
+            key={collective.slug}
             collective={collective}
             href={`/${collective.slug}`}
             className="small"

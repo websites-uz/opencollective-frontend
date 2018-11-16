@@ -247,6 +247,7 @@ class Collective extends React.Component {
               collective={collective}
               cta={cta}
               LoggedInUser={LoggedInUser}
+              key={collective.slug}
             />
 
             <div>
@@ -280,29 +281,28 @@ class Collective extends React.Component {
                     />
                   </div>
 
-                  {collective.isActive &&
-                    collective.host && (
-                      <div className="sidebar tiers" id="contribute">
-                        {collective.tiers.map(tier => (
-                          <TierCard
-                            key={`TierCard-${tier.slug}`}
-                            collective={collective}
-                            tier={tier}
-                            referral={query.referral}
-                          />
-                        ))}
-                        <div className="CustomDonationTierCard">
-                          <Link route={`/${collective.slug}/donate`}>
-                            <a>
-                              <FormattedMessage
-                                id="collective.tiers.donate"
-                                defaultMessage="Or make a one time donation"
-                              />
-                            </a>
-                          </Link>
-                        </div>
+                  {collective.isActive && collective.host && (
+                    <div className="sidebar tiers" id="contribute">
+                      {collective.tiers.map(tier => (
+                        <TierCard
+                          key={`TierCard-${tier.slug}`}
+                          collective={collective}
+                          tier={tier}
+                          referral={query.referral}
+                        />
+                      ))}
+                      <div className="CustomDonationTierCard">
+                        <Link route={`/${collective.slug}/donate`}>
+                          <a>
+                            <FormattedMessage
+                              id="collective.tiers.donate"
+                              defaultMessage="Or make a one time donation"
+                            />
+                          </a>
+                        </Link>
                       </div>
-                    )}
+                    </div>
+                  )}
                 </div>
               </div>
 

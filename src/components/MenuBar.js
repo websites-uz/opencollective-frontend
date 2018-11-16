@@ -454,30 +454,29 @@ class MenuBar extends React.Component {
             </Link>
           </div>
         ))}
-        {LoggedInUser &&
-          LoggedInUser.canEditCollective(collective) && (
-            <div className="admin">
-              {['USER', 'ORGANIZATION'].indexOf(collective.type) !== -1 && (
-                <div className="item transactions">
-                  <Link route={`${collective.path}/transactions`}>
-                    <FormattedMessage
-                      id="menu.transactions"
-                      defaultMessage="transactions"
-                    />
-                  </Link>
-                </div>
-              )}
-              <div className="separator" />
-              <div className="item editCollective">
-                <Link route={`${collective.path}/edit`}>
-                  <PencilIcon size="1.75em" />
-                  {intl.formatMessage(
-                    this.messages[`menu.edit.${collective.type.toLowerCase()}`],
-                  )}
+        {LoggedInUser && LoggedInUser.canEditCollective(collective) && (
+          <div className="admin">
+            {['USER', 'ORGANIZATION'].indexOf(collective.type) !== -1 && (
+              <div className="item transactions">
+                <Link route={`${collective.path}/transactions`}>
+                  <FormattedMessage
+                    id="menu.transactions"
+                    defaultMessage="transactions"
+                  />
                 </Link>
               </div>
+            )}
+            <div className="separator" />
+            <div className="item editCollective">
+              <Link route={`${collective.path}/edit`}>
+                <PencilIcon size="1.75em" />
+                {intl.formatMessage(
+                  this.messages[`menu.edit.${collective.type.toLowerCase()}`],
+                )}
+              </Link>
             </div>
-          )}
+          </div>
+        )}
       </div>
     );
   };
@@ -593,6 +592,7 @@ class MenuBar extends React.Component {
                             src={collective.image}
                             type={collective.type}
                             name={collective.name}
+                            key={collective.image}
                             className="logo"
                             radius="4.8rem"
                           />
@@ -600,6 +600,7 @@ class MenuBar extends React.Component {
                         {collective.type !== 'USER' && (
                           <Logo
                             src={collective.image}
+                            key={collective.image}
                             className="logo"
                             type={collective.type}
                             website={collective.website}
