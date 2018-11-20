@@ -6,6 +6,7 @@ import Link from './Link';
 import Logo from './Logo';
 import { get } from 'lodash';
 import { firstSentence, imagePreview } from '../lib/utils';
+import { defaultBackgroundImage, defaultImage } from '../constants/collectives';
 
 class CollectiveCard extends React.Component {
   static propTypes = {
@@ -67,14 +68,21 @@ class CollectiveCard extends React.Component {
     const backgroundImage = imagePreview(
       collective.backgroundImage ||
         get(collective, 'parentCollective.backgroundImage'),
-      null,
+      defaultBackgroundImage['COLLECTIVE'],
       { width: 400 },
     );
+
     if (!coverStyle.backgroundImage && backgroundImage) {
       coverStyle.backgroundImage = `url('${backgroundImage}')`;
       coverStyle.backgroundSize = 'cover';
       coverStyle.backgroundPosition = 'center center';
     }
+
+    const logoImage = imagePreview(
+      collective.image,
+      defaultImage['COLLECTIVE'],
+      { height: 65 },
+    );
 
     const truncatedDescription =
       (collective.description && firstSentence(collective.description, 80)) ||
@@ -82,13 +90,15 @@ class CollectiveCard extends React.Component {
         firstSentence(collective.longDescription, 80));
     const description = collective.description;
 
-    let route = this.props.collective.path || `/${this.props.collective.slug}`;
+    const params = {
+      slug: collective.slug,
+    };
     if (LoggedInUser) {
-      route += `?referral=${LoggedInUser.CollectiveId}`;
+      params.referral = LoggedInUser.CollectiveId;
     }
 
     return (
-      <Link route={route} target="_top">
+      <Link route="collective" target="_top" params={params} passHref>
         <div className={`CollectiveCard ${collective.type}`}>
           <style jsx>
             {`
@@ -241,7 +251,7 @@ class CollectiveCard extends React.Component {
             <div className="background" style={coverStyle} />
             <div className="logo">
               <Logo
-                src={collective.image}
+                src={logoImage}
                 type={collective.type}
                 website={collective.website}
                 height={65}
@@ -314,34 +324,30 @@ class CollectiveCard extends React.Component {
                   </div>
                 </div>
               )}
-            {collective.stats &&
-              collective.stats.collectives && (
-                <div className="stats">
-                  <div className="backers">
-                    <div className="value">
-                      {get(collective, 'stats.collectives.hosted')}
-                    </div>
-                    <div className="label">
-                      <FormattedMessage
-                        id="collective.card.collectives.count"
-                        defaultMessage="{n, plural, one {collective} other {collectives}} hosted"
-                        values={{
-                          n: get(collective, 'stats.collectives.hosted'),
-                        }}
-                      />
-                    </div>
+            {collective.stats && collective.stats.collectives && (
+              <div className="stats">
+                <div className="backers">
+                  <div className="value">
+                    {get(collective, 'stats.collectives.hosted')}
                   </div>
-                  <div className="currency">
-                    <div className="value">{collective.currency}</div>
-                    <div className="label">
-                      <FormattedMessage
-                        id="currency"
-                        defaultMessage="currency"
-                      />
-                    </div>
+                  <div className="label">
+                    <FormattedMessage
+                      id="collective.card.collectives.count"
+                      defaultMessage="{n, plural, one {collective} other {collectives}} hosted"
+                      values={{
+                        n: get(collective, 'stats.collectives.hosted'),
+                      }}
+                    />
                   </div>
                 </div>
-              )}
+                <div className="currency">
+                  <div className="value">{collective.currency}</div>
+                  <div className="label">
+                    <FormattedMessage id="currency" defaultMessage="currency" />
+                  </div>
+                </div>
+              </div>
+            )}
             {membership && (
               <div className="membership">
                 <div className="role">{tierName}</div>
@@ -361,36 +367,34 @@ class CollectiveCard extends React.Component {
                 )}
               </div>
             )}
-            {role === 'BACKER' &&
-              get(membership, 'stats.totalDonations') > 0 && (
-                <div className="totalDonations">
-                  <div className="totalDonationsAmount">
-                    <Currency
-                      value={get(membership, 'stats.totalDonations')}
-                      currency={get(membership, 'collective.currency')}
-                    />
-                  </div>
-                  <FormattedMessage
-                    id="membership.totalDonations.title"
-                    defaultMessage={'amount contributed'}
+            {role === 'BACKER' && get(membership, 'stats.totalDonations') > 0 && (
+              <div className="totalDonations">
+                <div className="totalDonationsAmount">
+                  <Currency
+                    value={get(membership, 'stats.totalDonations')}
+                    currency={get(membership, 'collective.currency')}
                   />
                 </div>
-              )}
-            {role === 'FUNDRAISER' &&
-              get(membership, 'stats.totalRaised') > 0 && (
-                <div className="totalRaised">
-                  <div className="totalRaisedAmount">
-                    <Currency
-                      value={get(membership, 'stats.totalRaised')}
-                      currency={get(membership, 'collective.currency')}
-                    />
-                  </div>
-                  <FormattedMessage
-                    id="membership.totalRaised.title"
-                    defaultMessage={'amount raised'}
+                <FormattedMessage
+                  id="membership.totalDonations.title"
+                  defaultMessage={'amount contributed'}
+                />
+              </div>
+            )}
+            {role === 'FUNDRAISER' && get(membership, 'stats.totalRaised') > 0 && (
+              <div className="totalRaised">
+                <div className="totalRaisedAmount">
+                  <Currency
+                    value={get(membership, 'stats.totalRaised')}
+                    currency={get(membership, 'collective.currency')}
                   />
                 </div>
-              )}
+                <FormattedMessage
+                  id="membership.totalRaised.title"
+                  defaultMessage={'amount raised'}
+                />
+              </div>
+            )}
           </div>
         </div>
       </Link>
