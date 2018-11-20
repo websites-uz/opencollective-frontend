@@ -17,7 +17,11 @@ export default ComposedComponent => {
   return class WithData extends React.Component {
     static async getInitialProps(ctx) {
       // Initial serverState with apollo (empty)
-      let serverState = {};
+      let serverState = {
+        apollo: {
+          data: {},
+        },
+      };
 
       const options = {
         headers: ctx.req ? ctx.req.headers : {},
@@ -90,10 +94,8 @@ export default ComposedComponent => {
 
     constructor(props) {
       super(props);
-      this.apollo = initClient(
-        this.props.serverState.apollo.data,
-        this.props.options,
-      );
+      const { serverState = { apollo: { data: {} } } } = this.props;
+      this.apollo = initClient(serverState.apollo.data, this.props.options);
     }
 
     render() {
