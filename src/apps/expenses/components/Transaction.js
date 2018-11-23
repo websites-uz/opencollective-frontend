@@ -74,6 +74,11 @@ class Transaction extends React.Component {
       paymentProcessorFeeInHostCurrency,
     } = this.props;
 
+    if (!fromCollective) {
+      console.error('No FromCollective for transaction', this.props);
+      return <div />;
+    }
+
     const amountToDisplay = ['ORGANIZATION', 'USER'].includes(collective.type)
       ? netAmountInCollectiveCurrency
       : amount;
